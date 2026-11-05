@@ -1,0 +1,30 @@
+name: Keep GitHub Repo Green
+
+on:
+  schedule:
+    # Runs automatically every day at 12:00 PM UTC (3:00 PM EAT)
+    - cron: '0 12 * * *'
+  workflow_dispatch: # Allows you to manually trigger it anytime
+
+jobs:
+  auto-commit:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Make a Daily Update
+        run: |
+          echo "Last active on: $(date)" > daily_activity.txt
+
+      - name: Commit and Push Changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chrono: daily repository maintenance"
+          file_pattern: 'daily_activity.txt'
